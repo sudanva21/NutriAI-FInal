@@ -1,0 +1,127 @@
+{
+  "theme_and_archetype": {
+    "theme": "LIGHT",
+    "archetype": "1 (Organic & Earthy)",
+    "vibe": "Premium, tactile, grounded, warm, physical.",
+    "reasoning": "Standard health apps use clinical greens and whites. To appeal to health-conscious individuals while feeling premium and modern, we use a tactile earthy palette. This removes the 'medical' feel and introduces a mindful, empowering aesthetic.",
+    "emotional_tone": "Empowering, mindful, warm, and structured without being rigid."
+  },
+  "typography": {
+    "font_families": {
+      "heading": "Outfit, sans-serif",
+      "body": "Manrope, sans-serif",
+      "mono": "JetBrains Mono, monospace"
+    },
+    "scale": {
+      "h1": "text-4xl sm:text-5xl lg:text-6xl font-light tracking-tighter",
+      "h2": "text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight",
+      "h3": "text-xl sm:text-2xl font-medium tracking-tight",
+      "h4": "text-lg sm:text-xl font-medium",
+      "body": "text-base leading-relaxed",
+      "small": "text-sm",
+      "tiny": "text-xs uppercase tracking-[0.2em] font-bold"
+    },
+    "rules": {
+      "anti_default": "Never use Inter for headings. Ensure tight letter spacing (-0.02em to -0.04em) on all headlines.",
+      "hierarchy": "Ensure high contrast between sizes. Pair light weight large headings with bold tiny overlines."
+    }
+  },
+  "colors": {
+    "backgrounds": {
+      "page": "#F9F6F0",
+      "card": "#FFFFFF",
+      "card_subtle": "#F2EFEB",
+      "glass": "rgba(255, 255, 255, 0.7)"
+    },
+    "text": {
+      "primary": "#1A1A1A",
+      "secondary": "#6B635E",
+      "inverse": "#FFFFFF",
+      "accent": "#E26D5C"
+    },
+    "accents": {
+      "primary": "#E26D5C",
+      "primary_hover": "#C95A4B",
+      "secondary": "#729B79",
+      "tertiary": "#E0A96D",
+      "border": "rgba(0,0,0,0.06)"
+    },
+    "charts": {
+      "calories": "#E26D5C",
+      "protein": "#729B79",
+      "carbs": "#E0A96D",
+      "fat": "#3D5A80",
+      "background": "#E8E4DF"
+    }
+  },
+  "spacing_and_layout": {
+    "philosophy": "Generous spacing. Use 2x more padding than standard apps to create a breathable, premium feel.",
+    "containers": "Use max-w-lg mx-auto for mobile views to simulate the app structure, or responsive max-w-7xl for wide views. Mobile-first layout always.",
+    "grid_system": {
+      "dashboard": "Bento grid approach. Use grid-cols-1 md:grid-cols-2 lg:grid-cols-4 with gap-6.",
+      "hero_card": "col-span-full md:col-span-2 row-span-2 for the calorie ring and main stats."
+    },
+    "padding_scale": {
+      "card": "p-6 sm:p-8",
+      "section": "py-12 sm:py-24",
+      "icon_button": "p-3"
+    }
+  },
+  "surfaces_and_components": {
+    "cards": {
+      "style": "Tactile Neumorphism mixed with sharp bounds. background-color: white; border: 1px solid rgba(0,0,0,0.06); border-radius: 1.5rem;",
+      "shadow": "shadow-[0_8px_30px_rgb(0,0,0,0.04)]",
+      "hover": "hover:-translate-y-1 hover:shadow-[0_12px_40px_rgb(0,0,0,0.08)] transition-all duration-300 ease-out"
+    },
+    "headers": {
+      "style": "Optical Clarity Glassmorphism. bg-white/70 backdrop-blur-xl backdrop-saturate-150 border-b border-black/5.",
+      "position": "sticky top-0 z-50"
+    },
+    "buttons": {
+      "primary": "bg-[#E26D5C] text-white rounded-full px-8 py-4 font-medium hover:bg-[#C95A4B] shadow-[0_4px_20px_rgba(226,109,92,0.3)] transition-all active:scale-95",
+      "secondary": "bg-[#F2EFEB] text-[#1A1A1A] rounded-full px-8 py-4 font-medium hover:bg-[#E8E4DF] transition-all active:scale-95",
+      "floating_action": "fixed bottom-8 right-8 bg-[#1A1A1A] text-white rounded-2xl p-4 shadow-xl hover:scale-105 active:scale-95 transition-all z-40"
+    },
+    "inputs": {
+      "style": "bg-[#F2EFEB] border-none rounded-xl px-4 py-3 text-[#1A1A1A] focus:ring-2 focus:ring-[#E26D5C] focus:bg-white transition-all outline-none"
+    }
+  },
+  "motion_and_interactions": {
+    "philosophy": "Smooth, tactile, and natural. Reduce visual noise.",
+    "transitions": {
+      "default": "transition-all duration-300 ease-[cubic-bezier(0.25,1,0.5,1)]"
+    },
+    "microinteractions": {
+      "active": "active:scale-[0.97]",
+      "hover": "hover:shadow-lg"
+    },
+    "accessibility": "Ensure all structural motion respects prefers-reduced-motion."
+  },
+  "icons": {
+    "library": "lucide-react",
+    "usage": "Use stroke-width 1.5 for a premium, lightweight look. Icons must vertically align perfectly with text."
+  },
+  "media": {
+    "images": [
+      {
+        "category": "meals_breakfast",
+        "url": "https://images.pexels.com/photos/34305255/pexels-photo-34305255.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Healthy breakfast bowl with fruits and granola."
+      },
+      {
+        "category": "meals_dinner",
+        "url": "https://images.pexels.com/photos/13883710/pexels-photo-13883710.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+        "description": "Gourmet healthy dinner top down."
+      }
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Strictly follow the color palette provided. Do not use generic tailwind colors like green-500 for success elements; use the specified Sage or Terracotta.",
+    "Implement the 'Bento' grid structure for the dashboard using responsive grid columns.",
+    "Ensure the calorie ring and macro charts use the exact colors specified in colors.charts.",
+    "Use Shadcn UI components for dropdowns, forms, and tabs, but override their default styles to match the 'cards' and 'buttons' styling definitions (sharp bounds, organic shadows, earthy background).",
+    "All interactive elements MUST have a data-testid attribute in kebab-case for automated testing.",
+    "Use standard semantic HTML sections inside custom responsive wrappers.",
+    "Inject the google fonts Outfit and Manrope in the main document/index file."
+  ]
+}
