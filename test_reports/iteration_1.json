@@ -1,0 +1,34 @@
+{
+  "summary": "Backend: all 12 pytest tests pass (auth, onboarding, food search, barcode Nutella, meal logs, streak/xp, weight, insights via GPT-5.2, meal-plan via GPT-5.2). Frontend: landing + auth screens render; identified unhandled Axios 403 errors bubbling into React error overlay on unauthenticated navigation.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "Global/AuthPages", "issue": "Unhandled AxiosError (403) surfaces as React 'Uncaught runtime errors' overlay on /auth and other pages when app attempts API calls without a token on mount. Requests should be guarded by auth state or the rejection caught.", "selector": "text=Uncaught runtime errors", "priority": "HIGH"}
+    ],
+    "integration_issues": [],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/backend_test.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Catch/handle AxiosError in fetchers (Dashboard/Insights/Plan/etc.) so axios 403s don't trigger React runtime error overlay when user isn't logged in yet or on transient 403.",
+    "Ensure authenticated-only API calls are gated on token presence (AuthProvider) before firing on mount.",
+    "Add data-testid to name input and register CTA (name-input/register-submit) to improve test automation reliability."
+  ],
+  "critical_code_review_comments": [
+    "server.py: _update_streak_and_xp streak logic — if a user logs on day D then skips day D+1 and logs on D+2, reset to 1 is correct; however consecutive logs same day still fine.",
+    "server.py: /api/food/barcode returns energy-kcal_100g which may be missing; already falls back to 0. Acceptable.",
+    "server.py: CORS allow_credentials=True with allow_origins='*' is a misconfig but env override available.",
+    "server.py is ~560 lines — consider splitting into routers/services if it keeps growing."
+  ],
+  "updated_files": ["/app/backend/tests/backend_test.py", "/app/memory/test_credentials.md"],
+  "success_rate": {"backend": "100%", "frontend": "partial - unable to fully automate onboarding due to unlabeled name field; backend-verified flows all work"},
+  "test_credentials": "See /app/memory/test_credentials.md (dynamic test_xxx@example.com per run, password TestPass123!). A probe account: probe123@test.com / TestPass123! (probe) was also created.",
+  "seed_data_creation": "Dynamically registered TEST users via /api/auth/register during pytest (prefix test_<uuid>@example.com). No cleanup performed — consider periodic purge.",
+  "retest_needed": true,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend fully covered by /app/backend/tests/backend_test.py (12 tests, all green incl. GPT-5.2 calls ~47s total). Frontend manual verification needed: (a) onboarding wizard 6-step flow (name input has no data-testid — add one or use label locator); (b) after login, if AxiosError overlay still appears on protected pages, that's the main bug to fix. Note domain .test is rejected by EmailStr; use example.com.",
+  "rca_of_the_issue": "React dev build shows 'Uncaught runtime errors' overlay whenever a promise rejects (AxiosError 403). When page mounts on /auth or anywhere pre-login, API calls made without Authorization header hit 401/403 and, because the rejection isn't caught in the component, React's error overlay (react-error-overlay / webpack-dev-server) renders the stack. Fix: wrap each useEffect fetch in try/catch or .catch(() => ...); or gate calls on `if (!token) return;` in AuthContext-consuming pages."
+}
