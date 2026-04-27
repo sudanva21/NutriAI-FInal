@@ -10,13 +10,58 @@ import MealPlan from "@/pages/MealPlan";
 import LogFood from "@/pages/LogFood";
 import Analytics from "@/pages/Analytics";
 import Profile from "@/pages/Profile";
+import Marketplace from "@/pages/Marketplace";
+import Checkout from "@/pages/Checkout";
+import Cart from "@/pages/Cart";
+import AllCounselors from "@/pages/AllCounselors";
 import BottomNav from "@/components/BottomNav";
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
 export const API = `${BACKEND_URL}/api`;
 
 const AuthCtx = createContext(null);
 export const useAuth = () => useContext(AuthCtx);
+
+const CartCtx = createContext(null);
+export const useCart = () => useContext(CartCtx);
+
+function CartProvider({ children }) {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (item) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.id === item.id && i.type === item.type);
+      if (existing) {
+        return prev.map((i) =>
+          i.id === item.id && i.type === item.type ? { ...i, quantity: i.quantity + 1 } : i
+        );
+      }
+      return [...prev, { ...item, quantity: 1 }];
+    });
+  };
+
+  const removeFromCart = (id, type) => {
+    setCart((prev) => prev.filter((i) => !(i.id === id && i.type === type)));
+  };
+
+  const updateQuantity = (id, type, qty) => {
+    setCart((prev) =>
+      prev.map((i) =>
+        i.id === id && i.type === type ? { ...i, quantity: Math.max(1, qty) } : i
+      )
+    );
+  };
+
+  const clearCart = () => setCart([]);
+
+  const cartTotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+
+  return (
+    <CartCtx.Provider value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal }}>
+      {children}
+    </CartCtx.Provider>
+  );
+}
 
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -104,6 +149,10 @@ function Shell() {
         <Route path="/app/plan" element={<MealPlan />} />
         <Route path="/app/log" element={<LogFood />} />
         <Route path="/app/analytics" element={<Analytics />} />
+        <Route path="/app/marketplace" element={<Marketplace />} />
+        <Route path="/app/checkout" element={<Checkout />} />
+        <Route path="/app/cart" element={<Cart />} />
+        <Route path="/app/counselors" element={<AllCounselors />} />
         <Route path="/app/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
@@ -116,7 +165,9 @@ export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Shell />
+        <CartProvider>
+          <Shell />
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );

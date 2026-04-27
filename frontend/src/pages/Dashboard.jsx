@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useAuth, API } from "@/App";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { Flame, Sparkles, Bell, Plus, Lightbulb, RefreshCcw, ChevronRight } from "lucide-react";
+import { Flame, Sparkles, Bell, Plus, Lightbulb, RefreshCcw, ChevronRight, User } from "lucide-react";
 
 export default function Dashboard() {
   const { user, refreshUser } = useAuth();
@@ -48,6 +48,9 @@ export default function Dashboard() {
           </h1>
         </div>
         <div className="flex items-center gap-2">
+          <Link to="/app/profile" className="p-3 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#1A1A1A] hover:bg-gray-50" aria-label="Profile" data-testid="profile-btn">
+            <User className="w-5 h-5" strokeWidth={1.75} />
+          </Link>
           <button className="p-3 rounded-full bg-white border border-black/5" aria-label="Notifications" data-testid="notifications-btn">
             <Bell className="w-5 h-5" strokeWidth={1.75}/>
           </button>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API } from "@/App";
-import { Sparkles, RefreshCcw, ChefHat } from "lucide-react";
+import { Sparkles, RefreshCcw, ChefHat, User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const DAY_LABELS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
@@ -48,10 +49,15 @@ export default function MealPlan() {
           <div className="tiny text-[#6B635E]">AI Meal Plan</div>
           <h1 className="font-display text-2xl font-medium tracking-tight mt-0.5">Your 7-day plan</h1>
         </div>
-        <button onClick={generate} disabled={loading} className="btn-secondary !py-2 !px-4 text-sm inline-flex items-center gap-2" data-testid="regenerate-plan-btn">
-          <RefreshCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} strokeWidth={1.75}/>
-          {plan ? "Regenerate" : "Generate"}
-        </button>
+        <div className="flex items-center gap-2">
+          <Link to="/app/profile" className="p-3 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#1A1A1A] hover:bg-gray-50" aria-label="Profile" data-testid="profile-btn">
+            <User className="w-5 h-5" strokeWidth={1.75} />
+          </Link>
+          <button onClick={generate} disabled={loading} className="btn-secondary !py-2 !px-4 text-sm inline-flex items-center gap-2" data-testid="regenerate-plan-btn">
+            <RefreshCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} strokeWidth={1.75}/>
+            {plan ? "Regenerate" : "Generate"}
+          </button>
+        </div>
       </div>
 
       {loading && !plan && (

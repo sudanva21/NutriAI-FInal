@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Home, Utensils, BarChart3, User, Plus } from "lucide-react";
+import { Home, Utensils, BarChart3, User, Plus, Store } from "lucide-react";
 
 export default function BottomNav() {
   const item = "flex flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-wider font-semibold";
@@ -21,8 +21,8 @@ export default function BottomNav() {
         <NavLink to="/app/analytics" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-analytics">
           <BarChart3 className="w-5 h-5" strokeWidth={1.75}/><span>Stats</span>
         </NavLink>
-        <NavLink to="/app/profile" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-profile">
-          <User className="w-5 h-5" strokeWidth={1.75}/><span>Profile</span>
+        <NavLink to="/app/marketplace" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-marketplace">
+          <Store className="w-5 h-5" strokeWidth={1.75}/><span>Market</span>
         </NavLink>
       </div>
     </nav>

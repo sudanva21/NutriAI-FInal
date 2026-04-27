@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API, useAuth } from "@/App";
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { User } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function Analytics() {
   const { user } = useAuth();
@@ -40,9 +42,14 @@ export default function Analytics() {
 
   return (
     <div className="max-w-lg mx-auto px-5 pt-8 pb-28" data-testid="analytics-page">
-      <header className="mb-6">
-        <div className="tiny text-[#6B635E]">Your trends</div>
-        <h1 className="font-display text-2xl font-medium tracking-tight mt-0.5">Analytics</h1>
+      <header className="mb-6 flex items-center justify-between">
+        <div>
+          <div className="tiny text-[#6B635E]">Your trends</div>
+          <h1 className="font-display text-2xl font-medium tracking-tight mt-0.5">Analytics</h1>
+        </div>
+        <Link to="/app/profile" className="p-3 rounded-full bg-white border border-black/5 flex items-center justify-center text-[#1A1A1A] hover:bg-gray-50" aria-label="Profile" data-testid="profile-btn">
+          <User className="w-5 h-5" strokeWidth={1.75} />
+        </Link>
       </header>
 
       <div className="grid grid-cols-2 gap-3 mb-5">
