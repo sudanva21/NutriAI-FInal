@@ -1,9 +1,10 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os, logging, uuid, json, bcrypt, jwt, httpx, re, razorpay
+import google.generativeai as genai
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict, Any
@@ -34,6 +35,11 @@ if RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET:
     razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
 else:
     razorpay_client = None
+
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+if GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_key_here':
+    genai.configure(api_key=GEMINI_API_KEY)
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -419,6 +425,49 @@ def _extract_json(text: str) -> Any:
         except Exception:
             continue
     raise ValueError("No JSON found in LLM output")
+
+@api_router.post("/food/analyze-image")
+async def analyze_food_image(file: UploadFile = File(...), user=Depends(get_current_user)):
+    if not GEMINI_API_KEY or GEMINI_API_KEY == 'your_gemini_key_here':
+        # Mock response for testing if no key is provided
+        logger.info("Using mock AI response since GEMINI_API_KEY is not set.")
+        import asyncio
+        await asyncio.sleep(1.5)
+        return {
+            "name": "Mock Avocado Toast",
+            "calories": 250,
+            "protein_g": 6,
+            "carbs_g": 20,
+            "fat_g": 15,
+            "fiber_g": 8,
+            "serving_size": "1 slice"
+        }
+    try:
+        contents = await file.read()
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        prompt = """
+        Analyze this image of food or a nutrition label. 
+        Identify the food item and estimate its nutritional value per standard serving.
+        Return ONLY a raw JSON object (no markdown formatting, no code blocks) with the following keys:
+        "name": string (the identified food),
+        "calories": number (estimated calories),
+        "protein_g": number (estimated protein in grams),
+        "carbs_g": number (estimated carbohydrates in grams),
+        "fat_g": number (estimated fat in grams),
+        "fiber_g": number (estimated fiber in grams),
+        "serving_size": string (the assumed serving size).
+        If you cannot identify the food, return reasonable defaults or 0s.
+        """
+        image_part = {
+            "mime_type": file.content_type,
+            "data": contents
+        }
+        response = model.generate_content([prompt, image_part])
+        data = _extract_json(response.text)
+        return data
+    except Exception as e:
+        logger.error(f"Image analysis failed: {e}")
+        raise HTTPException(status_code=500, detail="Failed to analyze image")
 
 
 @api_router.post("/meal-plan/generate")

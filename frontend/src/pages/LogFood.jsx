@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { API } from "@/App";
 import { useNavigate } from "react-router-dom";
-import { Search, ScanBarcode, PlusCircle, ArrowLeft, X } from "lucide-react";
+import { Search, ScanBarcode, PlusCircle, ArrowLeft, X, Camera } from "lucide-react";
 
 const MEAL_TYPES = ["breakfast","lunch","dinner","snack"];
 
@@ -18,6 +18,7 @@ export default function LogFood() {
   const [selected, setSelected] = useState(null);
   const [servings, setServings] = useState(1);
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
 
   function guessMealType() {
     const h = new Date().getHours();
@@ -41,6 +42,25 @@ export default function LogFood() {
     } catch (e) {
       alert(e?.response?.data?.detail || "Not found");
       setBarProduct(null);
+    }
+  };
+
+  const handleAIScan = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setScanning(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const { data } = await axios.post(`${API}/food/analyze-image`, formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
+      setSelected({ ...data, source: "ai" });
+    } catch (err) {
+      alert("AI Scan failed: " + (err?.response?.data?.detail || err.message));
+    } finally {
+      setScanning(false);
+      e.target.value = null;
     }
   };
 
@@ -87,8 +107,8 @@ export default function LogFood() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-[#F2EFEB] p-1 rounded-full mb-5">
-        {[["search","Search",Search],["barcode","Barcode",ScanBarcode],["manual","Manual",PlusCircle]].map(([id, label, Icon]) => (
+      <div className="flex gap-1 bg-[#F2EFEB] p-1 rounded-full mb-5 overflow-x-auto no-scrollbar">
+        {[["search","Search",Search],["barcode","Barcode",ScanBarcode],["ai","AI",Camera],["manual","Manual",PlusCircle]].map(([id, label, Icon]) => (
           <button key={id} onClick={()=>{setTab(id); setSelected(null);}}
             className={`flex-1 py-2 rounded-full text-sm font-medium inline-flex items-center justify-center gap-1.5 ${tab===id ? "bg-white shadow-sm" : "text-[#6B635E]"}`}
             data-testid={`log-tab-${id}`}>
@@ -136,6 +156,28 @@ export default function LogFood() {
               </div>
             </button>
           )}
+        </div>
+      )}
+
+      {tab === "ai" && (
+        <div data-testid="log-ai-tab" className="text-center py-6">
+          <div className="w-16 h-16 bg-[#F2EFEB] rounded-full flex items-center justify-center mx-auto mb-4 text-[#6B635E]">
+            <Camera className="w-8 h-8" strokeWidth={1.5} />
+          </div>
+          <h3 className="font-display text-xl mb-2">Scan your meal</h3>
+          <p className="text-sm text-[#6B635E] mb-6">Take a photo of your food or a nutrition label to instantly log macros.</p>
+          
+          <label className={`btn-primary inline-flex justify-center items-center cursor-pointer relative overflow-hidden transition-opacity ${scanning ? "opacity-70" : ""}`}>
+            {scanning ? "Analyzing image..." : "Open Camera / Gallery"}
+            <input 
+              type="file" 
+              accept="image/*" 
+              capture="environment" 
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              onChange={handleAIScan}
+              disabled={scanning}
+            />
+          </label>
         </div>
       )}
 
