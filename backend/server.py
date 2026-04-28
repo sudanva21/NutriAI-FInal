@@ -19,7 +19,14 @@ db_name = os.environ.get('DB_NAME', 'nutriai')
 JWT_SECRET = os.environ.get('JWT_SECRET', 'default_secret_for_local_dev')
 EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("backend_errors.log"),
+        logging.StreamHandler()
+    ]
+)
 logger = logging.getLogger(__name__)
 
 if not mongo_url:
@@ -592,7 +599,7 @@ async def analyze_food_image(file: UploadFile = File(...), user=Depends(get_curr
         }
     try:
         contents = await file.read()
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         prompt = """
         Analyze this image of food or a nutrition label. 
         Identify the food item and estimate its nutritional value per standard serving.
@@ -658,7 +665,7 @@ async def generate_meal_plan(user=Depends(get_current_user)):
         Make sure the daily totals match the targets closely.
         Provide a unique, relevant, 1-2 word `image_keyword` for each meal.
         """
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         plan = _extract_json(response.text)
         
@@ -753,9 +760,15 @@ class PaymentVerifyRequest(BaseModel):
     razorpay_order_id: str
     razorpay_payment_id: str
     razorpay_signature: str
+    item_id: str
+    item_type: str
+    item_name: Optional[str] = None
+    item_image: Optional[str] = None
+    amount: Optional[int] = None
 
 @api_router.post("/payment/create-order")
 async def create_payment_order(req: PaymentCreateRequest, user=Depends(get_current_user)):
+
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay not configured")
     
@@ -766,34 +779,62 @@ async def create_payment_order(req: PaymentCreateRequest, user=Depends(get_curre
     }
     try:
         order = razorpay_client.order.create(data=data)
-        return {"order_id": order["id"], "amount": order["amount"], "currency": order["currency"]}
+        return {
+            "order_id": order["id"], 
+            "amount": order["amount"], 
+            "currency": order["currency"],
+            "key_id": RAZORPAY_KEY_ID
+        }
+    except razorpay.errors.BadRequestError as e:
+        logger.error(f"Razorpay BadRequestError: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Razorpay error: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        logger.error(f"Payment order creation failed: {str(e)}")
+        raise HTTPException(status_code=500, detail="Internal server error during payment initialization")
 
 @api_router.post("/payment/verify")
 async def verify_payment(req: PaymentVerifyRequest, user=Depends(get_current_user)):
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay not configured")
-    
     try:
         razorpay_client.utility.verify_payment_signature({
             'razorpay_order_id': req.razorpay_order_id,
             'razorpay_payment_id': req.razorpay_payment_id,
             'razorpay_signature': req.razorpay_signature
         })
-        # Record payment in DB if needed
-        await db.payments.insert_one({
-            "user_id": user["id"],
-            "order_id": req.razorpay_order_id,
-            "payment_id": req.razorpay_payment_id,
-            "status": "success",
-            "created_at": datetime.now(timezone.utc).isoformat()
-        })
-        return {"status": "success"}
     except razorpay.errors.SignatureVerificationError:
         raise HTTPException(status_code=400, detail="Invalid signature")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+    # Record payment and create order in DB
+    order_doc = {
+        "user_id": user["id"],
+        "order_id": req.razorpay_order_id,
+        "payment_id": req.razorpay_payment_id,
+        "item_id": req.item_id,
+        "item_type": req.item_type,
+        "item_name": req.item_name,
+        "item_image": req.item_image,
+        "amount": req.amount,
+        "status": "confirmed", # Initial status
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.payments.insert_one({
+        "user_id": user["id"],
+        "order_id": req.razorpay_order_id,
+        "payment_id": req.razorpay_payment_id,
+        "status": "success",
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    await db.orders.insert_one(order_doc)
+    order_doc.pop("_id", None) # Remove ObjectId for JSON serialization
+    return {"status": "success", "order": order_doc}
+
+@api_router.get("/orders")
+async def get_orders(user=Depends(get_current_user)):
+    orders = await db.orders.find({"user_id": user["id"]}, {"_id": 0}).sort("created_at", -1).to_list(100)
+    return orders
 
 
 # ===================== MOUNT =====================

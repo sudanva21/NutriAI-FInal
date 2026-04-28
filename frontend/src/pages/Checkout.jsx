@@ -174,14 +174,14 @@ const Checkout = () => {
       const { data: order } = await axios.post(`${API}/payment/create-order`, { amount: item.price });
 
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_test_placeholder',
+        key: order.key_id,
         amount: order.amount,
         currency: order.currency,
         name: 'NutriAI Marketplace',
         description: isCounselor
           ? `Session with ${item.name} on ${selectedDate} at ${selectedTime}`
           : `Payment for ${item.name}`,
-        order_id: order.id,
+        order_id: order.order_id,
         handler: async (response) => {
           try {
             await axios.post(`${API}/payment/verify`, {
@@ -190,6 +190,9 @@ const Checkout = () => {
               razorpay_signature: response.razorpay_signature,
               item_id: item.id,
               item_type: item.type,
+              item_name: item.name,
+              item_image: item.image,
+              amount: item.price,
             });
             // Lock slot in localStorage
             if (isCounselor) {
@@ -209,7 +212,9 @@ const Checkout = () => {
       paymentObject.open();
       setLoading(false);
     } catch (err) {
-      setError('Could not initialize payment. Please try again.');
+      console.error('Checkout initialization error:', err);
+      const errorMessage = err.response?.data?.detail || 'Could not initialize payment. Please try again.';
+      setError(errorMessage);
       setLoading(false);
     }
   };

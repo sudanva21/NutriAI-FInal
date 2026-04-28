@@ -7,7 +7,7 @@ import { useCart } from '../App';
 export const COUNSELORS = [
   {
     id: 'c1', name: 'Dr. Neha Sharma', specialty: 'Clinical Nutritionist', rating: 4.9, reviews: 128,
-    price: 1500, priceDisplay: '₹1500/session', type: 'counselor',
+    price: 1, priceDisplay: '₹1/session', type: 'counselor',
     image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300',
     availableDays: [1,2,3,4,5], workingHours: ['09:00','10:00','11:00','14:00','15:00','16:00'],
     bio: 'Over 10 years of clinical experience in therapeutic nutrition, diabetes management, and gut health.',
@@ -15,7 +15,7 @@ export const COUNSELORS = [
   },
   {
     id: 'c2', name: 'Rahul Khanna', specialty: 'Sports Dietitian', rating: 4.8, reviews: 94,
-    price: 1200, priceDisplay: '₹1200/session', type: 'counselor',
+    price: 1, priceDisplay: '₹1/session', type: 'counselor',
     image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300',
     availableDays: [1,3,5], workingHours: ['08:00','09:00','10:00','17:00','18:00'],
     bio: 'Specialises in performance nutrition for athletes and body composition optimization.',
@@ -23,7 +23,7 @@ export const COUNSELORS = [
   },
   {
     id: 'c3', name: 'Dr. Priya Desai', specialty: 'Weight Management Expert', rating: 4.7, reviews: 112,
-    price: 1350, priceDisplay: '₹1350/session', type: 'counselor',
+    price: 1, priceDisplay: '₹1/session', type: 'counselor',
     image: 'https://images.unsplash.com/photo-1594824432258-f58c735d4d31?auto=format&fit=crop&q=80&w=300&h=300',
     availableDays: [2,4], workingHours: ['11:00','12:00','13:00','15:00','16:00'],
     bio: 'Expert in sustainable weight loss strategies combining nutrition, behaviour change, and lifestyle.',
@@ -31,7 +31,7 @@ export const COUNSELORS = [
   },
   {
     id: 'c4', name: 'Arjun Patel', specialty: 'Holistic Health Coach', rating: 4.9, reviews: 87,
-    price: 1100, priceDisplay: '₹1100/session', type: 'counselor',
+    price: 1, priceDisplay: '₹1/session', type: 'counselor',
     image: 'https://images.unsplash.com/photo-1537368910025-702800faa86b?auto=format&fit=crop&q=80&w=300&h=300',
     availableDays: [1,2,3,4,5,6], workingHours: ['07:00','08:00','09:00','18:00','19:00'],
     bio: 'Integrative approach combining Ayurveda, modern nutrition, mindfulness, and movement coaching.',
@@ -42,8 +42,8 @@ export const COUNSELORS = [
 export const PRODUCTS = [
   // Protein
   {
-    id: 'p1', category: 'protein', name: 'Whey Protein Isolate', brand: 'MuscleBlaze', price: 2499,
-    priceDisplay: '₹2,499', rating: 4.8, image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=400',
+    id: 'p1', category: 'protein', name: 'Whey Protein Isolate', brand: 'MuscleBlaze', price: 1,
+    priceDisplay: '₹1', rating: 4.8, image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '30g', servings: 60,
     description: 'Ultra-pure whey isolate with 27g protein per scoop. Fast absorbing, low carb, low fat.',
     nutrition: { calories: 120, protein_g: 27, carbs_g: 2, fat_g: 0.5, fiber_g: 0 },
@@ -51,8 +51,8 @@ export const PRODUCTS = [
     tags: ['High Protein', 'Low Carb'],
   },
   {
-    id: 'p2', category: 'protein', name: 'Organic Plant Protein', brand: 'NutriLife India', price: 1899,
-    priceDisplay: '₹1,899', rating: 4.7, image: 'https://images.unsplash.com/photo-1597075095100-f6a57b2a2b3a?auto=format&fit=crop&q=80&w=400',
+    id: 'p2', category: 'protein', name: 'Organic Plant Protein', brand: 'NutriLife India', price: 1,
+    priceDisplay: '₹1', rating: 4.7, image: 'https://images.unsplash.com/photo-1597075095100-f6a57b2a2b3a?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '35g', servings: 30,
     description: 'A blend of pea, brown rice, and hemp protein. Vegan, non-GMO, and easy to digest.',
     nutrition: { calories: 130, protein_g: 20, carbs_g: 8, fat_g: 3, fiber_g: 2 },
@@ -60,8 +60,8 @@ export const PRODUCTS = [
     tags: ['Vegan', 'Non-GMO'],
   },
   {
-    id: 'p3', category: 'protein', name: 'Micellar Casein (Night Protein)', brand: 'Optimum Nutrition', price: 3199,
-    priceDisplay: '₹3,199', rating: 4.6, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=400',
+    id: 'p3', category: 'protein', name: 'Micellar Casein (Night Protein)', brand: 'Optimum Nutrition', price: 1,
+    priceDisplay: '₹1', rating: 4.6, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '33g', servings: 56,
     description: 'Slow-digesting casein protein ideal before sleep. Sustained amino acid release for 7–8 hours.',
     nutrition: { calories: 120, protein_g: 24, carbs_g: 3, fat_g: 1, fiber_g: 1 },
@@ -69,8 +69,8 @@ export const PRODUCTS = [
     tags: ['Slow Release', 'Night Recovery'],
   },
   {
-    id: 'p4', category: 'protein', name: 'Egg White Protein Powder', brand: 'PurePower', price: 2199,
-    priceDisplay: '₹2,199', rating: 4.5, image: 'https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?auto=format&fit=crop&q=80&w=400',
+    id: 'p4', category: 'protein', name: 'Egg White Protein Powder', brand: 'PurePower', price: 1,
+    priceDisplay: '₹1', rating: 4.5, image: 'https://images.unsplash.com/photo-1491975474562-1f4e30bc9468?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '28g', servings: 45,
     description: 'Derived from pasteurised egg whites. Lactose-free, complete amino acid profile, zero fat.',
     nutrition: { calories: 100, protein_g: 22, carbs_g: 1, fat_g: 0, fiber_g: 0 },
@@ -79,8 +79,8 @@ export const PRODUCTS = [
   },
   // Carbs / Mass
   {
-    id: 'p5', category: 'carbs', name: 'Mass Gainer XXL', brand: 'BigMuscles', price: 2799,
-    priceDisplay: '₹2,799', rating: 4.4, image: 'https://images.unsplash.com/photo-1543340713-8a08109da31b?auto=format&fit=crop&q=80&w=400',
+    id: 'p5', category: 'carbs', name: 'Mass Gainer XXL', brand: 'BigMuscles', price: 1,
+    priceDisplay: '₹1', rating: 4.4, image: 'https://images.unsplash.com/photo-1543340713-8a08109da31b?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '165g', servings: 20,
     description: 'High-calorie mass gainer with complex carbs and protein. Ideal for hard gainers.',
     nutrition: { calories: 650, protein_g: 30, carbs_g: 120, fat_g: 5, fiber_g: 4 },
@@ -88,8 +88,8 @@ export const PRODUCTS = [
     tags: ['High Calorie', 'Mass Building'],
   },
   {
-    id: 'p6', category: 'carbs', name: 'Dextrose Monohydrate', brand: 'Healthfarm', price: 599,
-    priceDisplay: '₹599', rating: 4.3, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=400',
+    id: 'p6', category: 'carbs', name: 'Dextrose Monohydrate', brand: 'Healthfarm', price: 1,
+    priceDisplay: '₹1', rating: 4.3, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '50g', servings: 40,
     description: 'Pure fast-acting carbohydrate for post-workout glycogen replenishment.',
     nutrition: { calories: 192, protein_g: 0, carbs_g: 50, fat_g: 0, fiber_g: 0 },
@@ -97,8 +97,8 @@ export const PRODUCTS = [
     tags: ['Post-Workout', 'Fast Carbs'],
   },
   {
-    id: 'p7', category: 'carbs', name: 'Oat Flour (Gluten-Free)', brand: 'NutriOats', price: 349,
-    priceDisplay: '₹349', rating: 4.6, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=400',
+    id: 'p7', category: 'carbs', name: 'Oat Flour (Gluten-Free)', brand: 'NutriOats', price: 1,
+    priceDisplay: '₹1', rating: 4.6, image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '40g', servings: 50,
     description: 'Whole grain oat flour, rich in beta-glucan. Ideal for clean bulking shakes.',
     nutrition: { calories: 148, protein_g: 5, carbs_g: 27, fat_g: 2.5, fiber_g: 4 },
@@ -107,8 +107,8 @@ export const PRODUCTS = [
   },
   // Performance
   {
-    id: 'p8', category: 'performance', name: 'Creatine Monohydrate', brand: 'AS-IT-IS Nutrition', price: 799,
-    priceDisplay: '₹799', rating: 4.9, image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=400',
+    id: 'p8', category: 'performance', name: 'Creatine Monohydrate', brand: 'AS-IT-IS Nutrition', price: 1,
+    priceDisplay: '₹1', rating: 4.9, image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '5g', servings: 60,
     description: 'Micronised creatine for increased strength, power, and muscle volume. Most researched supplement.',
     nutrition: { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 },
@@ -116,8 +116,8 @@ export const PRODUCTS = [
     tags: ['Strength', 'Power Output'],
   },
   {
-    id: 'p9', category: 'performance', name: 'BCAA 2:1:1 Powder', brand: 'MuscleBlaze', price: 1199,
-    priceDisplay: '₹1,199', rating: 4.7, image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=400',
+    id: 'p9', category: 'performance', name: 'BCAA 2:1:1 Powder', brand: 'MuscleBlaze', price: 1,
+    priceDisplay: '₹1', rating: 4.7, image: 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '10g', servings: 40,
     description: 'Instantized BCAA in the optimal 2:1:1 ratio. Reduces muscle soreness and supports recovery.',
     nutrition: { calories: 20, protein_g: 5, carbs_g: 0, fat_g: 0, fiber_g: 0 },
@@ -126,8 +126,8 @@ export const PRODUCTS = [
   },
   // Vitamins
   {
-    id: 'p10', category: 'vitamins', name: 'Daily Multivitamin (60 caps)', brand: 'HealthKart', price: 899,
-    priceDisplay: '₹899', rating: 4.9, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=400',
+    id: 'p10', category: 'vitamins', name: 'Daily Multivitamin (60 caps)', brand: 'HealthKart', price: 1,
+    priceDisplay: '₹1', rating: 4.9, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '1 capsule', servings: 60,
     description: '23 essential vitamins and minerals. Supports immunity, energy, and bone health.',
     nutrition: { calories: 5, protein_g: 0, carbs_g: 1, fat_g: 0, fiber_g: 0 },
@@ -135,8 +135,8 @@ export const PRODUCTS = [
     tags: ['Immunity', 'Energy'],
   },
   {
-    id: 'p11', category: 'vitamins', name: 'Vitamin D3 + K2 Drops', brand: 'Carbamide Forte', price: 499,
-    priceDisplay: '₹499', rating: 4.8, image: 'https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&q=80&w=400',
+    id: 'p11', category: 'vitamins', name: 'Vitamin D3 + K2 Drops', brand: 'Carbamide Forte', price: 1,
+    priceDisplay: '₹1', rating: 4.8, image: 'https://images.unsplash.com/photo-1577401239170-897942555fb3?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '0.5ml', servings: 60,
     description: 'Liquid D3 + K2 for superior absorption. Supports bone density and immune function.',
     nutrition: { calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, fiber_g: 0 },
@@ -144,8 +144,8 @@ export const PRODUCTS = [
     tags: ['Bone Health', 'Immunity'],
   },
   {
-    id: 'p12', category: 'vitamins', name: 'Omega-3 Fish Oil (1000mg)', brand: 'PureCatch', price: 1100,
-    priceDisplay: '₹1,100', rating: 4.6, image: 'https://images.unsplash.com/photo-1550572017-edb799988226?auto=format&fit=crop&q=80&w=400',
+    id: 'p12', category: 'vitamins', name: 'Omega-3 Fish Oil (1000mg)', brand: 'PureCatch', price: 1,
+    priceDisplay: '₹1', rating: 4.6, image: 'https://images.unsplash.com/photo-1550572017-edb799988226?auto=format&fit=crop&q=80&w=400',
     type: 'product', servingSize: '1 softgel', servings: 90,
     description: 'High-potency EPA + DHA. Supports heart health, joint flexibility, and brain function.',
     nutrition: { calories: 10, protein_g: 0, carbs_g: 0, fat_g: 1, fiber_g: 0 },

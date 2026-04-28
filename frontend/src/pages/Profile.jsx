@@ -1,9 +1,11 @@
 import React from "react";
 import { useAuth } from "@/App";
-import { LogOut, Flame, Trophy, Target, Salad } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { LogOut, Flame, Trophy, Target, Salad, ShoppingBag } from "lucide-react";
 
 export default function Profile() {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   if (!user) return null;
   const levelNames = ["Seedling","Sprout","Grower","Cultivator","Harvest Pro"];
   const levelName = levelNames[Math.min(user.level - 1, levelNames.length - 1)] || "Seedling";
@@ -62,6 +64,25 @@ export default function Profile() {
         <Row label="Weight" v={user.current_weight_kg ? `${user.current_weight_kg} kg` : "—"}/>
         <Row label="Activity" v={user.activity_level || "—"}/>
         <Row label="Allergies" v={(user.allergies || []).join(", ") || "none"}/>
+      </div>
+      
+      {/* Orders link */}
+      <div className="mt-5">
+        <button 
+          onClick={() => navigate('/app/orders')}
+          className="card p-5 w-full flex items-center justify-between hover:bg-white/50 transition-colors"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-2xl bg-[#E26D5C] flex items-center justify-center shadow-lg shadow-[#E26D5C]/20">
+              <ShoppingBag className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <h3 className="font-display text-base font-medium">My Orders</h3>
+              <p className="text-xs text-[#6B635E]">Track products & consultations</p>
+            </div>
+          </div>
+          <ShoppingBag className="w-5 h-5 text-[#6B635E]/30" />
+        </button>
       </div>
 
       <button onClick={logout} className="btn-secondary mt-6 w-full inline-flex items-center justify-center gap-2" data-testid="logout-btn">

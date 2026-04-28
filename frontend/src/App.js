@@ -15,6 +15,7 @@ import Checkout from "@/pages/Checkout";
 import Cart from "@/pages/Cart";
 import AllCounselors from "@/pages/AllCounselors";
 import ProductDetail from "@/pages/ProductDetail";
+import Orders from "@/pages/Orders";
 import BottomNav from "@/components/BottomNav";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -166,6 +167,7 @@ function Shell() {
         <Route path="/app/checkout" element={<Checkout />} />
         <Route path="/app/cart" element={<Cart />} />
         <Route path="/app/counselors" element={<AllCounselors />} />
+        <Route path="/app/orders" element={<Orders />} />
         <Route path="/app/profile" element={<Profile />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
