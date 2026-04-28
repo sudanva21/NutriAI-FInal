@@ -109,7 +109,8 @@ export default function LogFood() {
       <div className="flex gap-2 mb-4" data-testid="meal-type-picker">
         {MEAL_TYPES.map(mt => (
           <button key={mt} onClick={()=>setMealType(mt)}
-            className={`flex-1 py-2 rounded-full text-xs uppercase tracking-wider font-semibold capitalize ${mealType===mt ? "bg-[#1A1A1A] text-white" : "bg-white border border-black/5 text-[#6B635E]"}`}
+            className={`flex-1 py-2 rounded-full text-xs uppercase tracking-wider font-semibold capitalize ${mealType===mt ? "text-white" : "bg-white border border-black/5 text-[#6B635E]"}`}
+            style={mealType===mt ? { backgroundColor: '#1A1A1A' } : {}}
             data-testid={`meal-type-${mt}`}>{mt}</button>
         ))}
       </div>

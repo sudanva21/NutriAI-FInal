@@ -58,7 +58,7 @@ export default function MealPlan() {
     <div className="max-w-lg mx-auto px-5 pt-8 pb-28" data-testid="meal-plan-page">
       {/* Toast */}
       {toast && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#1A1A1A] text-white text-sm px-5 py-3 rounded-full shadow-lg flex items-center gap-2 animate-fade-in" data-testid="log-toast">
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 text-white text-sm px-5 py-3 rounded-full shadow-lg flex items-center gap-2 animate-fade-in" style={{ backgroundColor: '#1A1A1A' }} data-testid="log-toast">
           <CheckCircle2 className="w-4 h-4 text-green-400" strokeWidth={2}/>
           {toast}
         </div>
@@ -101,7 +101,8 @@ export default function MealPlan() {
           <div className="flex gap-2 overflow-x-auto pb-2 -mx-5 px-5" data-testid="day-selector">
             {days.map((d, i) => (
               <button key={i} onClick={()=>setSelectedDay(i)}
-                className={`flex-shrink-0 px-4 py-3 rounded-2xl min-w-[70px] text-center transition-all ${selectedDay===i ? "bg-[#1A1A1A] text-white" : "bg-white border border-black/5"}`}
+                className={`flex-shrink-0 px-4 py-3 rounded-2xl min-w-[70px] text-center transition-all ${selectedDay===i ? "text-white" : "bg-white border border-black/5"}`}
+                style={selectedDay===i ? { backgroundColor: '#1A1A1A' } : {}}
                 data-testid={`day-chip-${i}`}>
                 <div className="tiny opacity-70">{DAY_LABELS[i % 7]}</div>
                 <div className="font-display text-lg font-medium mt-0.5">{d.day}</div>
@@ -111,7 +112,7 @@ export default function MealPlan() {
 
           {day && (
             <div className="mt-4">
-              <div className="card p-5 bg-[#1A1A1A] text-white" data-testid="day-summary">
+              <div className="card p-5 text-white" style={{ backgroundColor: '#1A1A1A' }} data-testid="day-summary">
                 <div className="tiny opacity-70">Day {day.day} · {day.label}</div>
                 <div className="mt-2 font-display text-2xl font-light">~{day.total_calories || day.meals.reduce((s,m)=>s+(m.calories||0),0)} kcal</div>
               </div>
