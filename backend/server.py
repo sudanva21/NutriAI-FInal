@@ -24,19 +24,21 @@ app = FastAPI(title="NutriAI API")
 
 # CORS Configuration
 cors_origins_raw = os.environ.get("CORS_ORIGINS", "")
-allowed_origins = [o.strip() for o in cors_origins_raw.split(",") if o.strip()]
+# Split by comma and strip whitespace and trailing slashes
+allowed_origins = [o.strip().rstrip("/") for o in cors_origins_raw.split(",") if o.strip()]
 
-# Add default development origins if not in production
-if not allowed_origins:
-    allowed_origins = ["*"]
+# Starlette/FastAPI requirement: allow_credentials=True cannot be used with ["*"]
+# If no specific origins are provided, we allow everything but disable credentials
+allow_all = not allowed_origins or "*" in allowed_origins
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_origins=["*"] if allow_all else allowed_origins,
+    allow_credentials=not allow_all,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 
 @app.get("/health")
