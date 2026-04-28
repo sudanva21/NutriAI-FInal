@@ -130,7 +130,7 @@ function Shell() {
     if (!user && !isAuthRoute) navigate("/auth", { replace: true });
     else if (user && !user.onboarded && loc.pathname !== "/onboarding") navigate("/onboarding", { replace: true });
     else if (user && user.onboarded && isAuthRoute) navigate("/app", { replace: true });
-  }, [user, loading, loc.pathname]);
+  }, [user, loading, loc.pathname, navigate]);
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center bg-[#F9F6F0]">
