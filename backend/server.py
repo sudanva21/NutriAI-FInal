@@ -23,23 +23,17 @@ EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 app = FastAPI(title="NutriAI API")
 
 # CORS Configuration
-cors_origins_raw = os.environ.get("CORS_ORIGINS", "")
-# Split by comma and strip whitespace and trailing slashes
-allowed_origins = [o.strip().rstrip("/") for o in cors_origins_raw.split(",") if o.strip()]
-
-# Starlette/FastAPI requirement: allow_credentials=True cannot be used with ["*"]
-# If no specific origins are provided, we allow everything but disable credentials
-allow_all = not allowed_origins or "*" in allowed_origins
+raw_cors = os.environ.get("CORS_ORIGINS", "")
+cors_list = [o.strip().rstrip("/") for o in raw_cors.split(",") if o.strip()]
+is_wildcard = not cors_list or "*" in cors_list
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if allow_all else allowed_origins,
-    allow_credentials=not allow_all,
+    allow_origins=["*"] if is_wildcard else cors_list,
+    allow_credentials=not is_wildcard,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
 
 @app.get("/health")
 async def health_check():
