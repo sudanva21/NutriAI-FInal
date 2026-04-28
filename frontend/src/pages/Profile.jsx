@@ -18,7 +18,7 @@ export default function Profile() {
       </header>
 
       {/* Level card */}
-      <div className="card p-6 bg-[#1A1A1A] text-white" data-testid="level-card">
+      <div className="card p-6 text-white" style={{ backgroundColor: '#1A1A1A' }} data-testid="level-card">
         <div className="flex items-start justify-between">
           <div>
             <div className="tiny opacity-60">Level {user.level}</div>
