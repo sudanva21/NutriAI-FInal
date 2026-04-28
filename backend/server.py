@@ -22,6 +22,23 @@ EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
 
 app = FastAPI(title="NutriAI API")
 
+# CORS Configuration
+cors_origins_raw = os.environ.get("CORS_ORIGINS", "")
+allowed_origins = [o.strip() for o in cors_origins_raw.split(",") if o.strip()]
+
+# Add default development origins if not in production
+if not allowed_origins:
+    allowed_origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=allowed_origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 @app.get("/health")
 async def health_check():
     return {"status": "ok", "message": "NutriAI API is running"}
