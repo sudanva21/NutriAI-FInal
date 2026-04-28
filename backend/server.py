@@ -4,7 +4,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-import os, logging, uuid, json, bcrypt, jwt, httpx, re, razorpay
+import os, logging, uuid, json, bcrypt, jwt, httpx, re, razorpay, asyncio
 import google.generativeai as genai
 from pathlib import Path
 from pydantic import BaseModel, Field, EmailStr
@@ -55,12 +55,26 @@ async def global_exception_handler(request, exc):
 
 @app.get("/health")
 async def health_check():
+    health_info = {
+        "status": "ok",
+        "message": "NutriAI API is running",
+        "env": {
+            "mongo_url_set": bool(os.environ.get('MONGO_URL')),
+            "db_name": db_name,
+            "jwt_secret_set": bool(os.environ.get('JWT_SECRET')),
+            "cors_origins": raw_cors
+        }
+    }
     try:
-        # Check DB connection
-        await client.admin.command('ping')
-        return {"status": "ok", "message": "NutriAI API is running", "db": "connected"}
+        # Check DB connection with a short timeout
+        await asyncio.wait_for(client.admin.command('ping'), timeout=2.0)
+        health_info["db"] = "connected"
+        return health_info
     except Exception as e:
-        return {"status": "warning", "message": "API is running but DB is down", "error": str(e)}
+        health_info["status"] = "warning"
+        health_info["db"] = "disconnected"
+        health_info["error"] = str(e)
+        return health_info
 
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
