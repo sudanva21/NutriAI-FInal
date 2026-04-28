@@ -1,4 +1,5 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, status, UploadFile, File, Request
+from fastapi.responses import JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -13,12 +14,21 @@ from datetime import datetime, timezone, timedelta, date as date_cls
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-mongo_url = os.environ['MONGO_URL']
-client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+mongo_url = os.environ.get('MONGO_URL')
+db_name = os.environ.get('DB_NAME', 'nutriai')
+JWT_SECRET = os.environ.get('JWT_SECRET', 'default_secret_for_local_dev')
+EMERGENT_LLM_KEY = os.environ.get('EMERGENT_LLM_KEY', '')
 
-JWT_SECRET = os.environ['JWT_SECRET']
-EMERGENT_LLM_KEY = os.environ['EMERGENT_LLM_KEY']
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
+
+if not mongo_url:
+    print("WARNING: MONGO_URL not found in environment variables")
+    # Fallback to localhost if needed, or handle appropriately
+    mongo_url = "mongodb://localhost:27017"
+
+client = AsyncIOMotorClient(mongo_url)
+db = client[db_name]
 
 app = FastAPI(title="NutriAI API")
 
@@ -35,9 +45,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    logger.error(f"Global error: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error", "error": str(exc)},
+    )
+
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "message": "NutriAI API is running"}
+    try:
+        # Check DB connection
+        await client.admin.command('ping')
+        return {"status": "ok", "message": "NutriAI API is running", "db": "connected"}
+    except Exception as e:
+        return {"status": "warning", "message": "API is running but DB is down", "error": str(e)}
 
 api_router = APIRouter(prefix="/api")
 security = HTTPBearer()
@@ -52,9 +75,6 @@ else:
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
 if GEMINI_API_KEY and GEMINI_API_KEY != 'your_gemini_key_here':
     genai.configure(api_key=GEMINI_API_KEY)
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 
 
 # ===================== MODELS =====================

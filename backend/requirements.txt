@@ -28,3 +28,4 @@ razorpay>=1.4.1
 gunicorn>=21.2.0
 google-generativeai>=0.8.0
 httpx>=0.27.0
+dnspython>=2.6.0
