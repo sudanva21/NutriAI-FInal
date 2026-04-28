@@ -19,6 +19,7 @@ export default function LogFood() {
   const [servings, setServings] = useState(1);
   const [saving, setSaving] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   function guessMealType() {
     const h = new Date().getHours();
@@ -30,8 +31,15 @@ export default function LogFood() {
 
   const search = async () => {
     if (!q.trim()) return;
-    const { data } = await axios.get(`${API}/food/search`, { params: { q } });
-    setResults(data);
+    setSearching(true);
+    try {
+      const { data } = await axios.get(`${API}/food/search`, { params: { q } });
+      setResults(data);
+    } catch (e) {
+      alert("Search failed: " + (e?.response?.data?.detail || e.message));
+    } finally {
+      setSearching(false);
+    }
   };
 
   const lookupBarcode = async () => {
@@ -121,8 +129,16 @@ export default function LogFood() {
         <div data-testid="log-search-tab">
           <div className="flex gap-2">
             <input className="input-earthy" placeholder="Search foods…" value={q} onChange={e=>setQ(e.target.value)} onKeyDown={e=>e.key==="Enter"&&search()} data-testid="food-search-input"/>
-            <button onClick={search} className="btn-primary !px-5 !py-3" data-testid="food-search-btn">Go</button>
+            <button onClick={search} disabled={searching} className="btn-primary !px-5 !py-3 disabled:opacity-60" data-testid="food-search-btn">
+              {searching ? "…" : "Go"}
+            </button>
           </div>
+          {searching && (
+            <div className="flex items-center gap-2 mt-4 text-sm text-[#6B635E]">
+              <svg className="animate-spin w-4 h-4 text-[#E26D5C]" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/></svg>
+              Searching…
+            </div>
+          )}
           <div className="mt-4 space-y-2">
             {results.map((f, i) => (
               <button key={i} onClick={()=>setSelected({...f, source:"search"})}

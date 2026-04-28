@@ -1,29 +1,55 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
-import { Home, Utensils, BarChart3, User, Plus, Store } from "lucide-react";
+import { NavLink, useLocation } from "react-router-dom";
+import { Home, Utensils, BarChart3, Store, Plus } from "lucide-react";
 
 export default function BottomNav() {
-  const item = "flex flex-col items-center justify-center gap-1 text-[10px] uppercase tracking-wider font-semibold";
+  const loc = useLocation();
+  const tabs = [
+    { path: "/app", icon: Home, label: "Home" },
+    { path: "/app/plan", icon: Utensils, label: "Plan" },
+    { path: "/app/log", icon: Plus, label: "Log", special: true },
+    { path: "/app/analytics", icon: BarChart3, label: "Stats" },
+    { path: "/app/marketplace", icon: Store, label: "Market" },
+  ];
+
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white/80 backdrop-blur-xl backdrop-saturate-150 border-t border-black/5" data-testid="bottom-nav">
-      <div className="max-w-lg mx-auto grid grid-cols-5 h-16 relative">
-        <NavLink to="/app" end className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-home">
-          <Home className="w-5 h-5" strokeWidth={1.75}/><span>Home</span>
-        </NavLink>
-        <NavLink to="/app/plan" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-plan">
-          <Utensils className="w-5 h-5" strokeWidth={1.75}/><span>Plan</span>
-        </NavLink>
-        <NavLink to="/app/log" className="flex items-center justify-center" data-testid="nav-log">
-          <div className="-mt-8 w-14 h-14 rounded-full bg-[#E26D5C] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(226,109,92,0.4)] active:scale-95 transition">
-            <Plus className="w-6 h-6" strokeWidth={2}/>
-          </div>
-        </NavLink>
-        <NavLink to="/app/analytics" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-analytics">
-          <BarChart3 className="w-5 h-5" strokeWidth={1.75}/><span>Stats</span>
-        </NavLink>
-        <NavLink to="/app/marketplace" className={({isActive}) => `${item} ${isActive ? "text-[#E26D5C]" : "text-[#6B635E]"}`} data-testid="nav-marketplace">
-          <Store className="w-5 h-5" strokeWidth={1.75}/><span>Market</span>
-        </NavLink>
+    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md" data-testid="bottom-nav">
+      <div className="bg-[#1A1A1A]/90 backdrop-blur-xl rounded-[2rem] px-4 py-2 shadow-2xl shadow-black/20 flex items-center justify-between border border-white/10">
+        {tabs.map((tab) => {
+          const isActive = loc.pathname === tab.path || (tab.path !== "/app" && loc.pathname.startsWith(tab.path));
+          
+          if (tab.special) {
+            return (
+              <NavLink
+                key={tab.path}
+                to={tab.path}
+                className="relative -mt-10 bg-[#E26D5C] w-14 h-14 rounded-full flex items-center justify-center text-white shadow-xl shadow-[#E26D5C]/30 active:scale-90 transition-transform"
+                data-testid="nav-log"
+              >
+                <Plus className="w-7 h-7" strokeWidth={2.5} />
+              </NavLink>
+            );
+          }
+
+          return (
+            <NavLink
+              key={tab.path}
+              to={tab.path}
+              className={`flex flex-col items-center justify-center gap-1 w-12 py-1 transition-all ${
+                isActive ? "text-[#E26D5C]" : "text-white/50 hover:text-white"
+              }`}
+              data-testid={`nav-${tab.label.toLowerCase()}`}
+            >
+              <tab.icon className="w-5 h-5" strokeWidth={isActive ? 2 : 1.75} />
+              <span className={`text-[9px] font-bold uppercase tracking-widest ${isActive ? "opacity-100" : "opacity-0"}`}>
+                {tab.label}
+              </span>
+              {isActive && (
+                <div className="absolute -bottom-1 w-1 h-1 bg-[#E26D5C] rounded-full shadow-[0_0_8px_#E26D5C]" />
+              )}
+            </NavLink>
+          );
+        })}
       </div>
     </nav>
   );

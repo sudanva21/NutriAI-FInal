@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import { API } from "@/App";
-import { Sparkles, RefreshCcw, ChefHat, User } from "lucide-react";
+import { Sparkles, RefreshCcw, ChefHat, User, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const DAY_LABELS = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
@@ -11,6 +11,8 @@ export default function MealPlan() {
   const [loading, setLoading] = useState(false);
   const [fetched, setFetched] = useState(false);
   const [selectedDay, setSelectedDay] = useState(0);
+  const [loggingMeal, setLoggingMeal] = useState(null); // index of meal being logged
+  const [toast, setToast] = useState("");
 
   useEffect(() => {
     axios.get(`${API}/meal-plan/current`).then(r => { setPlan(r.data); setFetched(true); });
@@ -27,7 +29,13 @@ export default function MealPlan() {
     } finally { setLoading(false); }
   };
 
-  const logMeal = async (m) => {
+  const showToast = useCallback((msg) => {
+    setToast(msg);
+    setTimeout(() => setToast(""), 2500);
+  }, []);
+
+  const logMeal = async (m, idx) => {
+    setLoggingMeal(idx);
     try {
       await axios.post(`${API}/logs`, {
         meal_type: m.meal_type, name: m.name,
@@ -35,8 +43,12 @@ export default function MealPlan() {
         carbs_g: m.carbs_g || 0, fat_g: m.fat_g || 0,
         servings: 1, source: "ai"
       });
-      alert("Logged!");
-    } catch (e) { alert("Failed: " + (e?.response?.data?.detail || e.message)); }
+      showToast(`${m.name} logged!`);
+    } catch (e) {
+      showToast("Failed to log meal.");
+    } finally {
+      setLoggingMeal(null);
+    }
   };
 
   const days = plan?.plan_json?.days || [];
@@ -44,6 +56,13 @@ export default function MealPlan() {
 
   return (
     <div className="max-w-lg mx-auto px-5 pt-8 pb-28" data-testid="meal-plan-page">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#1A1A1A] text-white text-sm px-5 py-3 rounded-full shadow-lg flex items-center gap-2 animate-fade-in" data-testid="log-toast">
+          <CheckCircle2 className="w-4 h-4 text-green-400" strokeWidth={2}/>
+          {toast}
+        </div>
+      )}
       <div className="flex items-center justify-between mb-6">
         <div>
           <div className="tiny text-[#6B635E]">AI Meal Plan</div>
@@ -102,8 +121,15 @@ export default function MealPlan() {
                   <div key={i} className="card p-5" data-testid={`plan-meal-${i}`}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
-                        <div className="tiny text-[#E26D5C]">{m.meal_type}</div>
-                        <div className="font-display text-lg font-medium mt-1">{m.name}</div>
+                        <div className="flex items-start justify-between mb-2">
+                          <div>
+                            <div className="tiny text-[#E26D5C]">{m.meal_type}</div>
+                            <div className="font-display text-lg font-medium mt-1">{m.name}</div>
+                          </div>
+                          {m.image_url && (
+                            <img src={m.image_url} alt={m.name} className="w-16 h-16 rounded-xl object-cover border border-black/5 flex-shrink-0" />
+                          )}
+                        </div>
                         {m.description && <div className="text-sm text-[#6B635E] mt-1">{m.description}</div>}
                         <div className="flex gap-3 mt-3 text-xs text-[#6B635E]">
                           <span><b className="text-[#1A1A1A]">{Math.round(m.calories||0)}</b> kcal</span>
@@ -119,7 +145,9 @@ export default function MealPlan() {
                           </div>
                         )}
                       </div>
-                      <button onClick={()=>logMeal(m)} className="btn-primary !px-4 !py-2 text-xs flex-shrink-0" data-testid={`log-plan-meal-${i}`}>Log</button>
+                      <button onClick={()=>logMeal(m, i)} disabled={loggingMeal === i} className="btn-primary !px-4 !py-2 text-xs flex-shrink-0 disabled:opacity-60" data-testid={`log-plan-meal-${i}`}>
+                        {loggingMeal === i ? "Logging…" : "Log"}
+                      </button>
                     </div>
                   </div>
                 ))}

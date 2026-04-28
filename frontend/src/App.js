@@ -14,6 +14,7 @@ import Marketplace from "@/pages/Marketplace";
 import Checkout from "@/pages/Checkout";
 import Cart from "@/pages/Cart";
 import AllCounselors from "@/pages/AllCounselors";
+import ProductDetail from "@/pages/ProductDetail";
 import BottomNav from "@/components/BottomNav";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || "http://localhost:8000";
@@ -137,10 +138,21 @@ function Shell() {
     </div>;
   }
 
-  const showNav = user && user.onboarded && !["/", "/auth", "/onboarding"].includes(loc.pathname);
+  const subPages = [
+    '/app/checkout',
+    '/app/cart',
+    '/app/log',
+    '/app/product/'
+  ];
+  
+  const isSubPage = subPages.some(p => loc.pathname.startsWith(p));
+
+  const showNav = user && user.onboarded && 
+                  !["/", "/auth", "/onboarding"].includes(loc.pathname) && 
+                  !isSubPage;
 
   return (
-    <div className="min-h-screen bg-[#F9F6F0] text-[#1A1A1A]" style={{fontFamily: "Manrope, sans-serif"}}>
+    <div className={`min-h-screen bg-[#F9F6F0] text-[#1A1A1A] ${showNav ? 'pb-32' : ''}`} style={{fontFamily: "Manrope, sans-serif"}}>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
@@ -150,6 +162,7 @@ function Shell() {
         <Route path="/app/log" element={<LogFood />} />
         <Route path="/app/analytics" element={<Analytics />} />
         <Route path="/app/marketplace" element={<Marketplace />} />
+        <Route path="/app/product/:id" element={<ProductDetail />} />
         <Route path="/app/checkout" element={<Checkout />} />
         <Route path="/app/cart" element={<Cart />} />
         <Route path="/app/counselors" element={<AllCounselors />} />

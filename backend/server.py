@@ -227,40 +227,141 @@ async def update_profile(data: OnboardingIn, user=Depends(get_current_user)):
 # ===================== FOOD SEARCH / BARCODE =====================
 # Built-in starter food DB (common items with per-serving nutrition)
 FOOD_DB = [
+    # Grains & Bread
     {"name": "Oatmeal (1 cup cooked)", "calories": 158, "protein_g": 6, "carbs_g": 27, "fat_g": 3, "fiber_g": 4},
-    {"name": "Greek Yogurt, plain (170g)", "calories": 100, "protein_g": 17, "carbs_g": 6, "fat_g": 0.7, "fiber_g": 0},
-    {"name": "Banana (medium)", "calories": 105, "protein_g": 1.3, "carbs_g": 27, "fat_g": 0.4, "fiber_g": 3.1},
-    {"name": "Apple (medium)", "calories": 95, "protein_g": 0.5, "carbs_g": 25, "fat_g": 0.3, "fiber_g": 4.4},
-    {"name": "Chicken Breast, grilled (100g)", "calories": 165, "protein_g": 31, "carbs_g": 0, "fat_g": 3.6, "fiber_g": 0},
-    {"name": "Salmon, cooked (100g)", "calories": 208, "protein_g": 22, "carbs_g": 0, "fat_g": 13, "fiber_g": 0},
-    {"name": "Brown Rice, cooked (1 cup)", "calories": 216, "protein_g": 5, "carbs_g": 45, "fat_g": 1.8, "fiber_g": 3.5},
-    {"name": "Quinoa, cooked (1 cup)", "calories": 222, "protein_g": 8, "carbs_g": 39, "fat_g": 3.6, "fiber_g": 5},
-    {"name": "Broccoli, steamed (1 cup)", "calories": 55, "protein_g": 3.7, "carbs_g": 11, "fat_g": 0.6, "fiber_g": 5.1},
-    {"name": "Avocado (half)", "calories": 160, "protein_g": 2, "carbs_g": 9, "fat_g": 15, "fiber_g": 7},
-    {"name": "Egg, large boiled", "calories": 78, "protein_g": 6.3, "carbs_g": 0.6, "fat_g": 5.3, "fiber_g": 0},
-    {"name": "Almonds (28g / 1 oz)", "calories": 164, "protein_g": 6, "carbs_g": 6, "fat_g": 14, "fiber_g": 3.5},
+    {"name": "Brown Rice (1 cup cooked)", "calories": 216, "protein_g": 5, "carbs_g": 45, "fat_g": 1.8, "fiber_g": 3.5},
+    {"name": "White Rice (1 cup cooked)", "calories": 206, "protein_g": 4.3, "carbs_g": 45, "fat_g": 0.4, "fiber_g": 0.6},
+    {"name": "Quinoa (1 cup cooked)", "calories": 222, "protein_g": 8, "carbs_g": 39, "fat_g": 3.6, "fiber_g": 5},
+    {"name": "Pasta, cooked (1 cup)", "calories": 220, "protein_g": 8, "carbs_g": 43, "fat_g": 1.3, "fiber_g": 2.5},
     {"name": "Whole Wheat Bread (1 slice)", "calories": 81, "protein_g": 4, "carbs_g": 14, "fat_g": 1.1, "fiber_g": 1.9},
-    {"name": "Peanut Butter (2 tbsp)", "calories": 188, "protein_g": 8, "carbs_g": 6, "fat_g": 16, "fiber_g": 2},
-    {"name": "Spinach, raw (1 cup)", "calories": 7, "protein_g": 0.9, "carbs_g": 1.1, "fat_g": 0.1, "fiber_g": 0.7},
-    {"name": "Sweet Potato, baked (1 medium)", "calories": 103, "protein_g": 2.3, "carbs_g": 24, "fat_g": 0.2, "fiber_g": 3.8},
+    {"name": "White Bread (1 slice)", "calories": 79, "protein_g": 2.7, "carbs_g": 15, "fat_g": 1, "fiber_g": 0.6},
+    {"name": "Chapati / Roti (1 medium)", "calories": 104, "protein_g": 3.1, "carbs_g": 18, "fat_g": 2.5, "fiber_g": 1.9},
+    {"name": "Bagel, plain (1 medium)", "calories": 245, "protein_g": 9.5, "carbs_g": 48, "fat_g": 1.5, "fiber_g": 2},
+    {"name": "Cornflakes (1 cup)", "calories": 101, "protein_g": 2, "carbs_g": 24, "fat_g": 0.2, "fiber_g": 1},
+    # Protein
+    {"name": "Chicken Breast, grilled (100g)", "calories": 165, "protein_g": 31, "carbs_g": 0, "fat_g": 3.6, "fiber_g": 0},
+    {"name": "Chicken Thigh, cooked (100g)", "calories": 209, "protein_g": 26, "carbs_g": 0, "fat_g": 11, "fiber_g": 0},
+    {"name": "Salmon, cooked (100g)", "calories": 208, "protein_g": 22, "carbs_g": 0, "fat_g": 13, "fiber_g": 0},
+    {"name": "Tuna, canned in water (100g)", "calories": 116, "protein_g": 26, "carbs_g": 0, "fat_g": 1, "fiber_g": 0},
+    {"name": "Egg, large boiled", "calories": 78, "protein_g": 6.3, "carbs_g": 0.6, "fat_g": 5.3, "fiber_g": 0},
+    {"name": "Egg White (1 large)", "calories": 17, "protein_g": 3.6, "carbs_g": 0.2, "fat_g": 0.1, "fiber_g": 0},
     {"name": "Tofu, firm (100g)", "calories": 144, "protein_g": 17, "carbs_g": 3, "fat_g": 9, "fiber_g": 2},
     {"name": "Lentils, cooked (1 cup)", "calories": 230, "protein_g": 18, "carbs_g": 40, "fat_g": 0.8, "fiber_g": 16},
-    {"name": "Olive Oil (1 tbsp)", "calories": 119, "protein_g": 0, "carbs_g": 0, "fat_g": 13.5, "fiber_g": 0},
+    {"name": "Chickpeas, cooked (1 cup)", "calories": 269, "protein_g": 15, "carbs_g": 45, "fat_g": 4.3, "fiber_g": 12.5},
+    {"name": "Black Beans, cooked (1 cup)", "calories": 227, "protein_g": 15.2, "carbs_g": 41, "fat_g": 0.9, "fiber_g": 15},
+    {"name": "Whey Protein (1 scoop)", "calories": 120, "protein_g": 24, "carbs_g": 3, "fat_g": 1.5, "fiber_g": 0},
+    {"name": "Ground Beef, cooked (100g)", "calories": 254, "protein_g": 26, "carbs_g": 0, "fat_g": 17, "fiber_g": 0},
+    {"name": "Shrimp, cooked (100g)", "calories": 99, "protein_g": 24, "carbs_g": 0.2, "fat_g": 0.3, "fiber_g": 0},
+    # Dairy
+    {"name": "Greek Yogurt, plain (170g)", "calories": 100, "protein_g": 17, "carbs_g": 6, "fat_g": 0.7, "fiber_g": 0},
+    {"name": "Milk, whole (1 cup)", "calories": 149, "protein_g": 8, "carbs_g": 12, "fat_g": 8, "fiber_g": 0},
+    {"name": "Milk, skim (1 cup)", "calories": 83, "protein_g": 8.3, "carbs_g": 12.2, "fat_g": 0.2, "fiber_g": 0},
     {"name": "Cheddar Cheese (28g)", "calories": 113, "protein_g": 7, "carbs_g": 0.4, "fat_g": 9, "fiber_g": 0},
-    {"name": "Pasta, cooked (1 cup)", "calories": 220, "protein_g": 8, "carbs_g": 43, "fat_g": 1.3, "fiber_g": 2.5},
+    {"name": "Cottage Cheese, low-fat (1 cup)", "calories": 163, "protein_g": 28, "carbs_g": 6, "fat_g": 2.3, "fiber_g": 0},
+    {"name": "Butter (1 tbsp)", "calories": 102, "protein_g": 0.1, "carbs_g": 0, "fat_g": 11.5, "fiber_g": 0},
+    # Fruits
+    {"name": "Banana (medium)", "calories": 105, "protein_g": 1.3, "carbs_g": 27, "fat_g": 0.4, "fiber_g": 3.1},
+    {"name": "Apple (medium)", "calories": 95, "protein_g": 0.5, "carbs_g": 25, "fat_g": 0.3, "fiber_g": 4.4},
+    {"name": "Orange (medium)", "calories": 62, "protein_g": 1.2, "carbs_g": 15.4, "fat_g": 0.2, "fiber_g": 3.1},
+    {"name": "Mango (1 cup sliced)", "calories": 99, "protein_g": 1.4, "carbs_g": 25, "fat_g": 0.6, "fiber_g": 2.6},
+    {"name": "Blueberries (1 cup)", "calories": 84, "protein_g": 1.1, "carbs_g": 21, "fat_g": 0.5, "fiber_g": 3.6},
+    {"name": "Strawberries (1 cup)", "calories": 49, "protein_g": 1, "carbs_g": 11.7, "fat_g": 0.5, "fiber_g": 3},
+    {"name": "Grapes (1 cup)", "calories": 104, "protein_g": 1.1, "carbs_g": 27, "fat_g": 0.2, "fiber_g": 1.4},
+    {"name": "Watermelon (1 cup)", "calories": 46, "protein_g": 0.9, "carbs_g": 11.5, "fat_g": 0.2, "fiber_g": 0.6},
+    # Vegetables
+    {"name": "Broccoli, steamed (1 cup)", "calories": 55, "protein_g": 3.7, "carbs_g": 11, "fat_g": 0.6, "fiber_g": 5.1},
+    {"name": "Spinach, raw (1 cup)", "calories": 7, "protein_g": 0.9, "carbs_g": 1.1, "fat_g": 0.1, "fiber_g": 0.7},
+    {"name": "Sweet Potato, baked (1 medium)", "calories": 103, "protein_g": 2.3, "carbs_g": 24, "fat_g": 0.2, "fiber_g": 3.8},
+    {"name": "Avocado (half)", "calories": 160, "protein_g": 2, "carbs_g": 9, "fat_g": 15, "fiber_g": 7},
+    {"name": "Carrot (1 medium)", "calories": 25, "protein_g": 0.6, "carbs_g": 6, "fat_g": 0.1, "fiber_g": 1.7},
+    {"name": "Tomato (1 medium)", "calories": 22, "protein_g": 1.1, "carbs_g": 4.8, "fat_g": 0.2, "fiber_g": 1.5},
+    {"name": "Cucumber (1 cup sliced)", "calories": 16, "protein_g": 0.7, "carbs_g": 3.8, "fat_g": 0.1, "fiber_g": 0.5},
+    {"name": "Kale, raw (1 cup)", "calories": 33, "protein_g": 2.9, "carbs_g": 6, "fat_g": 0.6, "fiber_g": 1.3},
+    {"name": "Onion (1 medium)", "calories": 44, "protein_g": 1.2, "carbs_g": 10.3, "fat_g": 0.1, "fiber_g": 1.9},
+    # Fats & Nuts
+    {"name": "Almonds (28g / 1 oz)", "calories": 164, "protein_g": 6, "carbs_g": 6, "fat_g": 14, "fiber_g": 3.5},
+    {"name": "Peanut Butter (2 tbsp)", "calories": 188, "protein_g": 8, "carbs_g": 6, "fat_g": 16, "fiber_g": 2},
+    {"name": "Olive Oil (1 tbsp)", "calories": 119, "protein_g": 0, "carbs_g": 0, "fat_g": 13.5, "fiber_g": 0},
+    {"name": "Walnuts (28g)", "calories": 185, "protein_g": 4.3, "carbs_g": 3.9, "fat_g": 18.5, "fiber_g": 1.9},
+    {"name": "Cashews (28g)", "calories": 157, "protein_g": 5.2, "carbs_g": 8.6, "fat_g": 12.4, "fiber_g": 0.9},
+    # Drinks
     {"name": "Green Tea (1 cup)", "calories": 2, "protein_g": 0, "carbs_g": 0, "fat_g": 0, "fiber_g": 0},
     {"name": "Coffee, black (1 cup)", "calories": 2, "protein_g": 0.3, "carbs_g": 0, "fat_g": 0, "fiber_g": 0},
-    {"name": "Whey Protein (1 scoop)", "calories": 120, "protein_g": 24, "carbs_g": 3, "fat_g": 1.5, "fiber_g": 0},
-    {"name": "Blueberries (1 cup)", "calories": 84, "protein_g": 1.1, "carbs_g": 21, "fat_g": 0.5, "fiber_g": 3.6},
+    {"name": "Orange Juice (1 cup)", "calories": 112, "protein_g": 1.7, "carbs_g": 26, "fat_g": 0.5, "fiber_g": 0.5},
+    # Common meals
+    {"name": "Pizza, cheese (1 slice)", "calories": 285, "protein_g": 12, "carbs_g": 36, "fat_g": 10, "fiber_g": 2.3},
+    {"name": "Burger, beef with bun", "calories": 354, "protein_g": 20, "carbs_g": 29, "fat_g": 17, "fiber_g": 1.3},
+    {"name": "French Fries (medium)", "calories": 365, "protein_g": 3.8, "carbs_g": 48, "fat_g": 17, "fiber_g": 3.8},
+    {"name": "Idli (2 pieces)", "calories": 130, "protein_g": 3.4, "carbs_g": 28, "fat_g": 0.4, "fiber_g": 1.3},
+    {"name": "Dosa, plain (1 medium)", "calories": 168, "protein_g": 3.9, "carbs_g": 30, "fat_g": 3.7, "fiber_g": 0.8},
+    {"name": "Dal, cooked (1 cup)", "calories": 198, "protein_g": 13, "carbs_g": 34, "fat_g": 0.9, "fiber_g": 9},
+    {"name": "Paneer (100g)", "calories": 265, "protein_g": 18.3, "carbs_g": 3.4, "fat_g": 20.8, "fiber_g": 0},
+    {"name": "Biryani, chicken (1 cup)", "calories": 290, "protein_g": 15, "carbs_g": 38, "fat_g": 8, "fiber_g": 1.5},
+    {"name": "Samosa (1 piece)", "calories": 252, "protein_g": 3.5, "carbs_g": 28, "fat_g": 14, "fiber_g": 1.7},
 ]
+
+def _local_food_search(q: str) -> list:
+    """Score and rank local FOOD_DB results."""
+    words = q.lower().strip().split()
+    scored = []
+    for food in FOOD_DB:
+        name_lower = food["name"].lower()
+        if all(w in name_lower for w in words):
+            score = 2 if name_lower.startswith(words[0]) else 1
+            scored.append((score, food))
+        elif any(w in name_lower for w in words):
+            scored.append((0, food))
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [f for _, f in scored[:10]]
 
 @api_router.get("/food/search")
 async def food_search(q: str, user=Depends(get_current_user)):
     q_lower = q.lower().strip()
     if not q_lower:
         return []
-    results = [f for f in FOOD_DB if q_lower in f["name"].lower()][:10]
-    return results
+
+    local_results = _local_food_search(q_lower)
+
+    # If we have enough local results, return immediately
+    if len(local_results) >= 3:
+        return local_results
+
+    # Fall back to Open Food Facts for a live search
+    try:
+        async with httpx.AsyncClient(timeout=6) as cl:
+            r = await cl.get(
+                "https://world.openfoodfacts.org/cgi/search.pl",
+                params={
+                    "search_terms": q,
+                    "search_simple": 1,
+                    "action": "process",
+                    "json": 1,
+                    "page_size": 10,
+                    "fields": "product_name,nutriments,serving_size",
+                }
+            )
+            data = r.json()
+            remote = []
+            for p in data.get("products", []):
+                nm = p.get("product_name", "").strip()
+                n = p.get("nutriments", {})
+                if not nm:
+                    continue
+                remote.append({
+                    "name": nm,
+                    "calories": round(n.get("energy-kcal_serving") or n.get("energy-kcal_100g") or 0, 1),
+                    "protein_g": round(n.get("proteins_serving") or n.get("proteins_100g") or 0, 1),
+                    "carbs_g": round(n.get("carbohydrates_serving") or n.get("carbohydrates_100g") or 0, 1),
+                    "fat_g": round(n.get("fat_serving") or n.get("fat_100g") or 0, 1),
+                    "fiber_g": round(n.get("fiber_serving") or n.get("fiber_100g") or 0, 1),
+                    "source": "openfoodfacts",
+                })
+            local_names = {x["name"] for x in local_results}
+            combined = local_results + [r for r in remote if r["name"] not in local_names]
+            return combined[:12]
+    except Exception as e:
+        logger.warning(f"Open Food Facts fallback failed: {e}")
+        return local_results
 
 @api_router.get("/food/barcode/{barcode}")
 async def food_barcode(barcode: str, user=Depends(get_current_user)):
@@ -444,7 +545,7 @@ async def analyze_food_image(file: UploadFile = File(...), user=Depends(get_curr
         }
     try:
         contents = await file.read()
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-2.5-flash')
         prompt = """
         Analyze this image of food or a nutrition label. 
         Identify the food item and estimate its nutritional value per standard serving.
@@ -466,63 +567,60 @@ async def analyze_food_image(file: UploadFile = File(...), user=Depends(get_curr
         data = _extract_json(response.text)
         return data
     except Exception as e:
-        logger.error(f"Image analysis failed: {e}")
-        raise HTTPException(status_code=500, detail="Failed to analyze image")
+        logger.error(f"Image analysis failed: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Failed to analyze image: {str(e)}")
 
 
 @api_router.post("/meal-plan/generate")
 async def generate_meal_plan(user=Depends(get_current_user)):
     try:
-        import openai
-        # Simple hardcoded mock to simulate AI generation if real keys fail or are "emergent" mocks
-        # We wrap in a short delay to simulate thought
-        import asyncio
-        await asyncio.sleep(1.5)
+        import google.generativeai as genai
         
-        # We provide a sensible mock plan using the user's targets
         tgt_cal = user.get('calories_target', 2000)
         tgt_pro = user.get('protein_target_g', 120)
         tgt_carb = user.get('carbs_target_g', 230)
         tgt_fat = user.get('fat_target_g', 65)
         
-        meal_cal = int(tgt_cal / 3)
-        meal_pro = int(tgt_pro / 3)
-        meal_carb = int(tgt_carb / 3)
-        meal_fat = int(tgt_fat / 3)
+        prompt = f"""
+        Generate a 7-day meal plan for a person with the following daily targets:
+        Calories: {tgt_cal} kcal
+        Protein: {tgt_pro}g
+        Carbs: {tgt_carb}g
+        Fat: {tgt_fat}g
         
-        plan = {
+        Return ONLY valid JSON in the following format:
+        {{
             "days": [
-                {
-                    "day": d,
-                    "label": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"][d-1],
+                {{
+                    "day": 1,
+                    "label": "Monday",
+                    "total_calories": 2000,
                     "meals": [
-                        {
+                        {{
                             "meal_type": "breakfast", 
-                            "name": "Oatmeal & Berries", 
-                            "description": "Hearty start to the day.", 
-                            "calories": meal_cal, "protein_g": meal_pro, "carbs_g": meal_carb, "fat_g": meal_fat, 
-                            "ingredients": ["Oats", "Berries", "Protein Powder"]
-                        },
-                        {
-                            "meal_type": "lunch", 
-                            "name": "Grilled Chicken Salad", 
-                            "description": "Light and refreshing.", 
-                            "calories": meal_cal, "protein_g": meal_pro, "carbs_g": meal_carb, "fat_g": meal_fat, 
-                            "ingredients": ["Chicken Breast", "Mixed Greens", "Olive Oil"]
-                        },
-                        {
-                            "meal_type": "dinner", 
-                            "name": "Salmon and Quinoa", 
-                            "description": "Rich in omega-3s.", 
-                            "calories": meal_cal, "protein_g": meal_pro, "carbs_g": meal_carb, "fat_g": meal_fat, 
-                            "ingredients": ["Salmon", "Quinoa", "Broccoli"]
-                        }
-                    ],
-                    "total_calories": meal_cal * 3
-                }
-                for d in range(1, 8)
+                            "name": "Meal Name", 
+                            "description": "Short desc.", 
+                            "calories": 500, "protein_g": 30, "carbs_g": 50, "fat_g": 20, 
+                            "ingredients": ["ing1", "ing2"],
+                            "image_keyword": "pancakes"
+                        }}
+                    ]
+                }}
             ]
-        }
+        }}
+        Make sure the daily totals match the targets closely.
+        Provide a unique, relevant, 1-2 word `image_keyword` for each meal.
+        """
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        response = model.generate_content(prompt)
+        plan = _extract_json(response.text)
+        
+        # Add image url to each meal
+        for day in plan.get("days", []):
+            for meal in day.get("meals", []):
+                if "image_keyword" in meal:
+                    kw = meal["image_keyword"].replace(" ", ",")
+                    meal["image_url"] = f"https://loremflickr.com/400/300/{kw},food/all"
     except Exception as e:
         logger.error(f"Meal plan gen failed: {e}")
         raise HTTPException(status_code=502, detail=f"AI meal plan generation failed: {str(e)[:200]}")
@@ -534,7 +632,7 @@ async def generate_meal_plan(user=Depends(get_current_user)):
         "start_date": today_iso(),
         "plan_json": plan,
         "generated_by": "ai",
-        "ai_model_version": "gpt-5.2-mock",
+        "ai_model_version": "gemini-2.5-flash",
         "created_at": datetime.now(timezone.utc).isoformat(),
     }
     await db.diet_plans.insert_one(doc.copy())

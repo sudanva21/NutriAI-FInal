@@ -1,61 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Star, Calendar, Search } from 'lucide-react';
+import { ArrowLeft, Star, Calendar, Search, MapPin, Award } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
+import { COUNSELORS } from './Marketplace';
 
 const AllCounselors = () => {
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
 
-  const counselors = [
-    {
-      id: 1,
-      name: 'Dr. Neha Sharma',
-      specialty: 'Clinical Nutritionist',
-      rating: 4.9,
-      reviews: 128,
-      price: 1500,
-      priceDisplay: '₹1500/session',
-      image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=300&h=300',
-      type: 'counselor'
-    },
-    {
-      id: 2,
-      name: 'Rahul Khanna',
-      specialty: 'Sports Dietitian',
-      rating: 4.8,
-      reviews: 94,
-      price: 1200,
-      priceDisplay: '₹1200/session',
-      image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&q=80&w=300&h=300',
-      type: 'counselor'
-    },
-    {
-      id: 3,
-      name: 'Dr. Priya Desai',
-      specialty: 'Weight Management Expert',
-      rating: 4.7,
-      reviews: 112,
-      price: 1350,
-      priceDisplay: '₹1350/session',
-      image: 'https://images.unsplash.com/photo-1594824432258-f58c735d4d31?auto=format&fit=crop&q=80&w=300&h=300',
-      type: 'counselor'
-    },
-    {
-      id: 4,
-      name: 'Arjun Patel',
-      specialty: 'Holistic Health Coach',
-      rating: 4.9,
-      reviews: 87,
-      price: 1100,
-      priceDisplay: '₹1100/session',
-      image: 'https://images.unsplash.com/photo-1537368910025-702800faa86b?auto=format&fit=crop&q=80&w=300&h=300',
-      type: 'counselor'
-    }
-  ];
-
-  const filtered = counselors.filter(c => 
+  const filtered = COUNSELORS.filter(c => 
     c.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
     c.specialty.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -90,29 +44,44 @@ const AllCounselors = () => {
             transition={{ delay: idx * 0.1 }}
             className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100"
           >
-            <div className="flex gap-4 items-center mb-4">
+            <div className="flex gap-4 items-start mb-4">
               <img 
                 src={counselor.image} 
                 alt={counselor.name} 
-                className="w-16 h-16 rounded-full object-cover border-2 border-[#FF6B6B]/20"
+                className="w-20 h-20 rounded-2xl object-cover border-2 border-[#E26D5C]/10"
               />
-              <div>
-                <h3 className="font-semibold text-gray-800">{counselor.name}</h3>
-                <p className="text-xs text-gray-500">{counselor.specialty}</p>
-                <div className="flex items-center gap-1 mt-1 text-xs font-medium text-amber-500">
-                  <Star size={12} className="fill-amber-500" />
-                  <span>{counselor.rating}</span>
-                  <span className="text-gray-400 font-normal">({counselor.reviews})</span>
+              <div className="flex-1">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-display text-lg font-medium text-[#1A1A1A]">{counselor.name}</h3>
+                  <div className="flex items-center gap-1 text-xs font-semibold text-amber-500">
+                    <Star size={14} className="fill-amber-500" />
+                    <span>{counselor.rating}</span>
+                  </div>
+                </div>
+                <p className="text-sm text-[#6B635E] mb-2">{counselor.specialty}</p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="flex items-center gap-1 text-[10px] bg-green-50 text-green-600 px-2 py-1 rounded-lg font-bold uppercase tracking-wider">
+                    <Award size={10} /> Certified
+                  </span>
+                  <span className="flex items-center gap-1 text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded-lg font-bold uppercase tracking-wider">
+                    <MapPin size={10} /> Online
+                  </span>
                 </div>
               </div>
             </div>
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-              <span className="font-bold text-gray-800">{counselor.priceDisplay}</span>
+            <div className="text-xs text-[#6B635E] mb-4 leading-relaxed line-clamp-2">
+              {counselor.bio}
+            </div>
+            <div className="flex items-center justify-between pt-4 border-t border-black/5">
+              <div>
+                <span className="font-bold text-[#1A1A1A]">{counselor.priceDisplay}</span>
+                <div className="text-[10px] text-green-600 font-bold mt-0.5">Next Available: {counselor.nextAvailable}</div>
+              </div>
               <button 
                 onClick={() => navigate('/app/checkout', { state: { item: { ...counselor, description: counselor.specialty } } })}
-                className="bg-[#FF6B6B] text-white px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-2"
+                className="bg-[#E26D5C] text-white px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 shadow-lg shadow-[#E26D5C]/20"
               >
-                <Calendar size={14} /> Book
+                <Calendar size={16} /> Book Session
               </button>
             </div>
           </motion.div>
@@ -124,7 +93,6 @@ const AllCounselors = () => {
         )}
       </main>
 
-      <BottomNav />
     </div>
   );
 };
